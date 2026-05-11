@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Login — Adventure Bangladesh{% endblock %}
+{% block content %}
+<div class="auth-wrapper">
+  <div class="container py-5">
+    <div class="auth-card">
+      <div class="auth-logo">Adventure <span>BD</span></div>
+      <p class="text-center text-muted mb-4" style="font-size:.9rem;">Welcome back! Sign in to your account.</p>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="mb-3">
+          <label class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<div class="text-danger mt-1" style="font-size:.82rem;">{{ field.errors.0 }}</div>{% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn-primary-custom w-100 justify-content-center mt-2">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In
+        </button>
+      </form>
+      <hr class="my-4">
+      <p class="text-center text-muted" style="font-size:.88rem;">Don't have an account? <a href="{% url 'accounts:register' %}" class="text-cyan fw-bold">Create one</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

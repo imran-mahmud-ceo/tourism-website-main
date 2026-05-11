@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+
+<div class="hero-wrap js-fullheight mb-8" style="background-image: url({% static 'images/bg_4.jpg' %});">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-center"
+            data-scrollax-parent="true">
+            <div class="col-md-9 ftco-animate text-center" data-scrollax=" properties: { translateY: '70%' }">
+                <p class="breadcrumbs" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }"><span
+                        class="mr-2"><a href="/">Home</a></p>
+                <h1 class="mb-3 bread" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">Your Profile</h1>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+    <div class="content-section mt-4 mb-4 ml-3">
+      <div class="media">
+        <img class="rounded-circle account-img " src="{{ user.profile.image.url }}">
+        <div class="media-body">
+          <h2 class="account-heading">{{ user.username }}</h2>
+          <p class="text-secondary">{{ user.email }}</p>
+        </div>
+      </div>
+      <!-- FORM HERE -->
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4">Profile Info</legend>
+      {{ u_form.as_p }}
+      {{ p_form.as_p }}
+    </fieldset>
+    <div class="form-group">
+      <button class="btn btn-outline-info ml-5" type="submit">Update</button>
+    </div>
+  </form>
+</div>
+<div class="">
+<small class="text-muted">
+  <a class="btn btn-info ml-5" href="{% url 'accounts:listing' %}" role="button">My listing</a><br>
+  <a class="btn btn-info mt-3 ml-4" href="{% url 'accounts:reservation' %}" role="button">My Reservations</a>
+</small>
+</div>
+
+{% endblock body %}

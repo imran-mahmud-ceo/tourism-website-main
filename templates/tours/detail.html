@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %}{{ tour.title }} — Adventure Bangladesh{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container" style="position:relative;z-index:2;">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li><li class="breadcrumb-item"><a href="{% url 'tours:list' %}">Tours</a></li><li class="breadcrumb-item active">{{ tour.title }}</li></ol></nav>
+    <h1 class="page-title">{{ tour.title }}</h1>
+    <div class="d-flex gap-3 flex-wrap" style="color:rgba(255,255,255,.75);font-size:.88rem;">
+      {% if tour.destination %}<span><i class="fa-solid fa-location-dot text-cyan me-1"></i>{{ tour.destination.title }}</span>{% endif %}
+      <span><i class="fa-regular fa-clock text-cyan me-1"></i>{{ tour.duration_days }} Days / {{ tour.duration_nights }} Nights</span>
+      <span><i class="fa-solid fa-users text-cyan me-1"></i>{{ tour.seats_available }} seats left</span>
+    </div>
+  </div>
+</div>
+<section class="section-py">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-8">
+        {% if tour.featured_image %}<img src="{{ tour.featured_image.url }}" alt="{{ tour.title }}" class="img-fluid rounded-4 mb-4" style="width:100%;height:420px;object-fit:cover;box-shadow:var(--shadow-md);">{% endif %}
+        <h2 class="text-navy mb-3">Tour Overview</h2>
+        <div style="color:var(--text-muted);line-height:1.9;">{{ tour.description|linebreaks }}</div>
+        {% if itinerary %}
+        <h3 class="text-navy mt-5 mb-4">Travel Itinerary</h3>
+        {% for day in itinerary %}
+        <div class="d-flex gap-3 mb-3 p-3 rounded-3" style="background:var(--gray-50);border:1px solid var(--gray-200);">
+          <div class="text-center" style="min-width:52px;background:var(--navy);border-radius:var(--radius-sm);padding:10px 6px;color:var(--white);">
+            <div style="font-size:.72rem;color:var(--cyan);text-transform:uppercase;">Day</div>
+            <div style="font-size:1.4rem;font-weight:800;line-height:1;">{{ day.day }}</div>
+          </div>
+          <div><div style="font-weight:700;color:var(--navy);">{{ day.title }}</div><p style="font-size:.88rem;color:var(--text-muted);margin:4px 0 0;">{{ day.description }}</p></div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% if tour.included_list or tour.excluded_list %}
+        <div class="row g-3 mt-4">
+          {% if tour.included_list %}
+          <div class="col-md-6">
+            <div class="p-4 rounded-4" style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);">
+              <h5 style="color:#15803d;"><i class="fa-solid fa-circle-check me-2"></i>Included</h5>
+              <ul class="list-unstyled mb-0">{% for item in tour.included_list %}<li style="font-size:.88rem;color:var(--text-muted);margin-bottom:6px;"><i class="fa-solid fa-check text-success me-2"></i>{{ item }}</li>{% endfor %}</ul>
+            </div>
+          </div>
+          {% endif %}
+          {% if tour.excluded_list %}
+          <div class="col-md-6">
+            <div class="p-4 rounded-4" style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);">
+              <h5 style="color:#991b1b;"><i class="fa-solid fa-circle-xmark me-2"></i>Excluded</h5>
+              <ul class="list-unstyled mb-0">{% for item in tour.excluded_list %}<li style="font-size:.88rem;color:var(--text-muted);margin-bottom:6px;"><i class="fa-solid fa-xmark text-danger me-2"></i>{{ item }}</li>{% endfor %}</ul>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+        {% if reviews %}
+        <h3 class="text-navy mt-5 mb-4">Traveler Reviews</h3>
+        {% for review in reviews %}
+        <div class="d-flex gap-3 mb-3 p-3 rounded-3" style="background:var(--gray-50);border:1px solid var(--gray-200);">
+          <div class="avatar-md d-flex align-items-center justify-content-center" style="background:rgba(0,201,200,.1);border-radius:50%;min-width:56px;"><i class="fa-solid fa-user text-cyan"></i></div>
+          <div>
+            <div class="fw-bold text-navy">{{ review.author.get_full_name|default:review.author.username }}</div>
+            <div class="rating-stars">{% for i in "12345" %}{% if forloop.counter <= review.rating %}<i class="fa-solid fa-star"></i>{% else %}<i class="fa-regular fa-star"></i>{% endif %}{% endfor %}</div>
+            <p style="font-size:.9rem;color:var(--text-muted);margin:4px 0 0;">{{ review.body }}</p>
+          </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+      </div>
+      <div class="col-lg-4">
+        <div class="sticky-top" style="top:90px;">
+          <div class="p-4 rounded-4" style="background:var(--navy);color:var(--white);margin-bottom:20px;">
+            <div style="font-size:.82rem;color:rgba(255,255,255,.5);">Starting from</div>
+            {% if tour.discount_price %}
+            <div style="font-size:1rem;text-decoration:line-through;color:rgba(255,255,255,.4);">৳{{ tour.price|floatformat:0 }}</div>
+            <div style="font-size:2.2rem;font-weight:800;color:var(--cyan);font-family:'Inter',sans-serif;">৳{{ tour.discount_price|floatformat:0 }}</div>
+            {% else %}
+            <div style="font-size:2.2rem;font-weight:800;color:var(--cyan);font-family:'Inter',sans-serif;">৳{{ tour.price|floatformat:0 }}</div>
+            {% endif %}
+            <div style="font-size:.8rem;color:rgba(255,255,255,.5);">per person</div>
+            <hr style="border-color:rgba(255,255,255,.1);">
+            <div class="d-flex justify-content-between py-2" style="font-size:.88rem;border-bottom:1px solid rgba(255,255,255,.08);">
+              <span style="color:rgba(255,255,255,.6);">Duration</span><span>{{ tour.duration_days }}D / {{ tour.duration_nights }}N</span>
+            </div>
+            <div class="d-flex justify-content-between py-2" style="font-size:.88rem;border-bottom:1px solid rgba(255,255,255,.08);">
+              <span style="color:rgba(255,255,255,.6);">Transport</span><span>{{ tour.get_transport_type_display }}</span>
+            </div>
+            <div class="d-flex justify-content-between py-2" style="font-size:.88rem;border-bottom:1px solid rgba(255,255,255,.08);">
+              <span style="color:rgba(255,255,255,.6);">Seats Left</span><span class="text-cyan">{{ tour.seats_available }}</span>
+            </div>
+            <div class="d-flex justify-content-between py-2" style="font-size:.88rem;">
+              <span style="color:rgba(255,255,255,.6);">Guide</span><span>{% if tour.guide_available %}Included{% else %}Not Included{% endif %}</span>
+            </div>
+            {% if user.is_authenticated %}
+            <a href="{% url 'bookings:book_tour' tour.slug %}" class="btn-gold w-100 text-center mt-4 d-block" style="border-radius:50px;padding:14px;">Book This Tour <i class="fa-solid fa-arrow-right ms-1"></i></a>
+            {% else %}
+            <a href="{% url 'accounts:login' %}?next={% url 'bookings:book_tour' tour.slug %}" class="btn-gold w-100 text-center mt-4 d-block" style="border-radius:50px;padding:14px;">Login to Book <i class="fa-solid fa-lock ms-1"></i></a>
+            {% endif %}
+          </div>
+          <a href="{% url 'contact:contact' %}" class="btn-outline-custom w-100 justify-content-center"><i class="fa-solid fa-headset me-2"></i>Need Help?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Hotels in Bangladesh — Adventure Bangladesh{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container" style="position:relative;z-index:2;">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li><li class="breadcrumb-item active">Hotels</li></ol></nav>
+    <h1 class="page-title">Find Your Perfect Stay</h1>
+    <p style="color:rgba(255,255,255,.7);">Discover premium hotels and resorts across Bangladesh</p>
+  </div>
+</div>
+<section class="section-py">
+  <div class="container">
+    <form method="get" class="row g-3 mb-5 p-4" style="background:var(--white);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border:1px solid var(--gray-200);">
+      <div class="col-md-5"><input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search hotels or locations..."></div>
+      <div class="col-md-4">
+        <select name="stars" class="form-select">
+          <option value="">All Ratings</option>
+          <option value="5" {% if stars == '5' %}selected{% endif %}>5 Stars</option>
+          <option value="4" {% if stars == '4' %}selected{% endif %}>4 Stars</option>
+          <option value="3" {% if stars == '3' %}selected{% endif %}>3 Stars</option>
+          <option value="2" {% if stars == '2' %}selected{% endif %}>2 Stars</option>
+        </select>
+      </div>
+      <div class="col-md-3"><button type="submit" class="btn-search">Search Hotels</button></div>
+    </form>
+
+    {% if hotels %}
+    <div class="row g-4">
+      {% for hotel in hotels %}
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+        <div class="card-hotel">
+          <div class="card-img-wrap">
+            {% if hotel.featured_image %}<img src="{{ hotel.featured_image.url }}" alt="{{ hotel.name }}" loading="lazy">
+            {% else %}<img src="https://picsum.photos/seed/h{{ hotel.pk }}/600/400" alt="{{ hotel.name }}" loading="lazy">{% endif %}
+            <span class="card-badge">{{ hotel.star_rating }} Star</span>
+          </div>
+          <div class="card-body-inner">
+            {% if hotel.destination %}<div class="card-location"><i class="fa-solid fa-location-dot text-cyan"></i>{{ hotel.destination.title }}</div>{% endif %}
+            <h3 class="card-title-text">{{ hotel.name }}</h3>
+            <div class="d-flex gap-2 mb-3">
+              {% if hotel.has_wifi %}<i class="fa-solid fa-wifi text-muted" title="Free WiFi"></i>{% endif %}
+              {% if hotel.has_pool %}<i class="fa-solid fa-person-swimming text-muted" title="Swimming Pool"></i>{% endif %}
+              {% if hotel.has_gym %}<i class="fa-solid fa-dumbbell text-muted" title="Gym"></i>{% endif %}
+              {% if hotel.has_restaurant %}<i class="fa-solid fa-utensils text-muted" title="Restaurant"></i>{% endif %}
+            </div>
+            <div class="d-flex align-items-center justify-content-between mt-auto">
+              <div>
+                <div style="font-size:.78rem;color:var(--text-muted);">Starts from</div>
+                <div class="card-price">৳{{ hotel.get_min_price|floatformat:0 }}</div>
+              </div>
+              <a href="{{ hotel.get_absolute_url }}" class="btn-primary-custom" style="padding:10px 20px;font-size:.84rem;">View Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-results"><i class="fa-solid fa-hotel"></i><h4>No hotels found</h4><p>Try searching for a different location or rating.</p></div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

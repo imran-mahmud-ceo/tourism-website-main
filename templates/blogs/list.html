@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Travel Blog — Adventure Bangladesh{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container" style="position:relative;z-index:2;">
+    <h1 class="page-title">Travel Stories & Tips</h1>
+    <p style="color:rgba(255,255,255,.7);">Get inspired by our latest travel guides and stories from across Bangladesh</p>
+  </div>
+</div>
+<section class="section-py">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-8">
+        {% if posts %}
+        <div class="row g-4">
+          {% for post in posts %}
+          <div class="col-md-6" data-aos="fade-up">
+            <div class="card-blog h-100">
+              <div class="card-img-wrap">
+                {% if post.featured_image %}<img src="{{ post.featured_image.url }}" alt="{{ post.title }}" loading="lazy">
+                {% else %}<img src="https://picsum.photos/seed/blog{{ post.pk }}/600/400" alt="{{ post.title }}" loading="lazy">{% endif %}
+                <span class="card-badge">{{ post.category.name }}</span>
+              </div>
+              <div class="card-body-inner d-flex flex-column">
+                <div class="card-meta">
+                  <span><i class="fa-regular fa-calendar text-cyan"></i>{{ post.created_at|date:"d M Y" }}</span>
+                  <span><i class="fa-regular fa-clock text-cyan"></i>{{ post.read_time }} min read</span>
+                </div>
+                <h3 class="card-title-text h5"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+                <p class="text-muted small mb-4">{{ post.excerpt|truncatewords:20 }}</p>
+                <div class="mt-auto">
+                  <a href="{{ post.get_absolute_url }}" class="btn-outline-custom py-2" style="font-size:.84rem;">Read More <i class="fa-solid fa-arrow-right ms-2"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-results"><i class="fa-solid fa-newspaper"></i><h4>No articles found</h4><p>Try searching for something else.</p></div>
+        {% endif %}
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="ps-lg-4">
+          <!-- Search -->
+          <div class="card p-4 mb-4" style="border-radius:var(--radius-md); border:1px solid var(--gray-200);">
+            <h5 class="text-navy mb-3">Search Blog</h5>
+            <form method="get">
+              <div class="input-group">
+                <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search articles...">
+                <button class="btn btn-navy bg-navy text-white" type="submit"><i class="fa-solid fa-search"></i></button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Categories -->
+          <div class="card p-4 mb-4" style="border-radius:var(--radius-md); border:1px solid var(--gray-200);">
+            <h5 class="text-navy mb-3">Categories</h5>
+            <div class="d-flex flex-column gap-2">
+              <a href="{% url 'blogs:list' %}" class="d-flex justify-content-between text-muted small py-1 border-bottom">All Posts <span>{{ posts.count }}</span></a>
+              {% for cat in categories %}
+              <a href="?category={{ cat.slug }}" class="d-flex justify-content-between text-muted small py-1 border-bottom {% if selected_category == cat.slug %}text-cyan fw-bold{% endif %}">
+                {{ cat.name }} <span>{{ cat.posts.count }}</span>
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Newsletter -->
+          <div class="card p-4 bg-navy text-white" style="border-radius:var(--radius-md);">
+            <h5 class="text-white mb-3">Stay Updated</h5>
+            <p class="small text-white-50 mb-4">Subscribe to our newsletter for latest travel deals and stories.</p>
+            <form>
+              <input type="email" class="form-control bg-transparent text-white border-secondary mb-3" placeholder="Your Email">
+              <button type="button" class="btn-primary-custom w-100 justify-content-center">Subscribe</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,9 @@
+Django==5.0.6
+Pillow==10.3.0
+whitenoise==6.7.0
+django-summernote==0.8.20.0
+Faker==25.2.0
+gunicorn==22.0.0
+sqlparse==0.5.0
+asgiref==3.8.1
+tzdata==2024.1

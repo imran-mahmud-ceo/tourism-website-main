@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}{{ destination.title }} — Adventure Bangladesh{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container" style="position:relative;z-index:2;">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li><li class="breadcrumb-item"><a href="{% url 'destinations:list' %}">Destinations</a></li><li class="breadcrumb-item active">{{ destination.title }}</li></ol></nav>
+    <h1 class="page-title">{{ destination.title }}</h1>
+    <div class="d-flex gap-3 flex-wrap" style="color:rgba(255,255,255,.75);font-size:.88rem;">
+      <span><i class="fa-solid fa-location-dot text-cyan me-1"></i>{{ destination.district }}</span>
+      <span><i class="fa-solid fa-mountain text-cyan me-1"></i>{{ destination.get_difficulty_display }}</span>
+      <span><i class="fa-solid fa-sun text-cyan me-1"></i>Best: {{ destination.get_best_season_display }}</span>
+      <span><i class="fa-solid fa-eye text-cyan me-1"></i>{{ destination.view_count }} views</span>
+    </div>
+  </div>
+</div>
+<section class="section-py">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-8">
+        {% if destination.featured_image %}
+        {% if destination.featured_image %}
+        <img src="{{ destination.featured_image.url }}" alt="{{ destination.title }}" class="img-fluid rounded-4 mb-4" style="width:100%;height:420px;object-fit:cover;box-shadow:var(--shadow-md);">
+        {% else %}
+        <img src="https://picsum.photos/seed/d{{ destination.pk }}/1200/600" alt="{{ destination.title }}" class="img-fluid rounded-4 mb-4" style="width:100%;height:420px;object-fit:cover;box-shadow:var(--shadow-md);">
+        {% endif %}
+        {% endif %}
+        <h2 class="text-navy mb-3">About {{ destination.title }}</h2>
+        <div style="color:var(--text-muted);line-height:1.9;">{{ destination.description|linebreaks }}</div>
+
+        {% if gallery %}
+        <h3 class="text-navy mt-5 mb-3">Photo Gallery</h3>
+        <div class="row g-2">
+          {% for img in gallery %}<div class="col-4"><img src="{{ img.image.url }}" alt="{{ img.caption }}" class="img-fluid rounded-3" style="height:140px;width:100%;object-fit:cover;" loading="lazy"></div>{% endfor %}
+        </div>
+        {% endif %}
+
+        {% if destination.safety_tips %}
+        <div class="mt-5 p-4 rounded-4" style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);">
+          <h4 style="color:#991b1b;"><i class="fa-solid fa-triangle-exclamation me-2"></i>Safety Tips</h4>
+          <div style="font-size:.92rem;color:var(--text-muted);">{{ destination.safety_tips|linebreaks }}</div>
+        </div>
+        {% endif %}
+
+        {% if related_tours %}
+        <h3 class="text-navy mt-5 mb-4">Tour Packages for {{ destination.title }}</h3>
+        <div class="row g-3">
+          {% for tour in related_tours %}
+          <div class="col-md-6">
+            <div class="card-tour">
+              <div class="card-img-wrap">{% if tour.featured_image %}<img src="{{ tour.featured_image.url }}" alt="{{ tour.title }}" style="height:160px;" loading="lazy">{% else %}<img src="https://picsum.photos/seed/t{{ tour.pk }}/400/200" alt="{{ tour.title }}" style="height:160px;" loading="lazy">{% endif %}</div>
+              <div class="card-body-inner">
+                <h5 class="card-title-text" style="font-size:1rem;">{{ tour.title }}</h5>
+                <div class="card-meta"><span><i class="fa-regular fa-clock text-cyan"></i>{{ tour.duration_days }}D</span><span class="card-price" style="font-size:1rem;">৳{{ tour.effective_price|floatformat:0 }}</span></div>
+                <a href="{{ tour.get_absolute_url }}" class="btn-primary-custom" style="padding:8px 16px;font-size:.82rem;margin-top:8px;">Book Now</a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      <div class="col-lg-4">
+        <div class="sticky-top" style="top:90px;">
+          <div class="p-4 rounded-4 mb-4" style="background:var(--navy);color:var(--white);">
+            <h5 style="color:var(--white);margin-bottom:20px;">Quick Info</h5>
+            <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid rgba(255,255,255,.08);">
+              <span style="color:rgba(255,255,255,.6);font-size:.88rem;">Budget Range</span>
+              <span class="text-cyan fw-bold">{{ destination.budget_range }}</span>
+            </div>
+            <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid rgba(255,255,255,.08);">
+              <span style="color:rgba(255,255,255,.6);font-size:.88rem;">Difficulty</span>
+              <span style="font-size:.88rem;">{{ destination.get_difficulty_display }}</span>
+            </div>
+            <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid rgba(255,255,255,.08);">
+              <span style="color:rgba(255,255,255,.6);font-size:.88rem;">Best Season</span>
+              <span style="font-size:.88rem;">{{ destination.get_best_season_display }}</span>
+            </div>
+            <a href="{% url 'tours:list' %}?q={{ destination.title }}" class="btn-gold w-100 text-center mt-4 d-block" style="border-radius:50px;padding:12px;">View Tour Packages</a>
+          </div>
+          {% if destination.weather_info %}
+          <div class="p-4 rounded-4" style="background:rgba(0,201,200,.06);border:1px solid rgba(0,201,200,.2);">
+            <h5 class="text-navy"><i class="fa-solid fa-cloud-sun text-cyan me-2"></i>Weather Info</h5>
+            <p style="font-size:.88rem;color:var(--text-muted);">{{ destination.weather_info }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

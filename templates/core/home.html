@@ -1,0 +1,441 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Adventure Bangladesh — Discover the Beauty of Bangladesh{% endblock %}
+{% block meta_desc %}Book premium tour packages to Cox's Bazar, Sajek Valley, Bandarban, Sundarbans & more. Bangladesh's #1 tourism booking platform.{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero ── -->
+<section class="hero-section">
+  <div class="hero-bg-overlay"></div>
+  <div class="hero-particles"></div>
+  <div class="container">
+    <div class="row align-items-center min-vh-100">
+      <div class="col-lg-7 hero-content" data-aos="fade-right">
+        <div class="hero-badge">
+          <i class="fa-solid fa-star"></i> Bangladesh's #1 Tourism Platform
+        </div>
+        <h1 class="hero-title">
+          Discover the<br>
+          <span class="accent">Hidden Gems</span><br>
+          of Bangladesh
+        </h1>
+        <p class="hero-subtitle">
+          From Cox's Bazar's golden shores to Sajek's misty valleys — explore breathtaking destinations, book curated tour packages, and create memories that last a lifetime.
+        </p>
+        <div class="d-flex gap-3 flex-wrap">
+          <a href="{% url 'tours:list' %}" class="btn-primary-custom">
+            <i class="fa-solid fa-map-location-dot"></i> Explore Tours
+          </a>
+          <a href="{% url 'destinations:list' %}" class="btn-outline-custom">
+            <i class="fa-solid fa-compass"></i> View Destinations
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="num">500+</div>
+            <div class="lbl">Tour Packages</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">50+</div>
+            <div class="lbl">Destinations</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">10K+</div>
+            <div class="lbl">Happy Travelers</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">8+</div>
+            <div class="lbl">Years Experience</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Search Bar ── -->
+<section style="background:var(--gray-50); padding-bottom:0;">
+  <div class="container">
+    <div class="search-bar-wrap" data-aos="fade-up">
+      <form method="get" action="{% url 'tours:list' %}">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-4">
+            <label class="form-label"><i class="fa-solid fa-magnifying-glass me-1 text-cyan"></i>Search Tours</label>
+            <input type="text" name="q" class="form-control" placeholder="E.g. Cox's Bazar, Sajek...">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label"><i class="fa-solid fa-layer-group me-1 text-cyan"></i>Category</label>
+            <select name="category" class="form-select">
+              <option value="">All Categories</option>
+              {% for cat in tour_categories %}
+              <option value="{{ cat.slug }}">{{ cat.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label"><i class="fa-solid fa-calendar-days me-1 text-cyan"></i>Duration</label>
+            <select name="duration" class="form-select">
+              <option value="">Any Duration</option>
+              <option value="2">Up to 2 Days</option>
+              <option value="4">Up to 4 Days</option>
+              <option value="7">Up to 7 Days</option>
+              <option value="14">Up to 14 Days</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn-search"><i class="fa-solid fa-search me-2"></i>Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ── Tour Categories ── -->
+{% if tour_categories %}
+<section class="section-py" style="background:var(--gray-50);">
+  <div class="container">
+    <div class="section-header text-center mx-auto" data-aos="fade-up">
+      <div class="badge-label">Browse By Type</div>
+      <h2>Tour Categories</h2>
+      <div class="divider-gold mx-auto"></div>
+      <p>Find your perfect travel style from our curated collection of tour types.</p>
+    </div>
+    <div class="row g-3 justify-content-center">
+      {% for cat in tour_categories %}
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+        <a href="{% url 'tours:list' %}?category={{ cat.slug }}" class="category-pill text-decoration-none">
+          <i class="fa-solid {{ cat.icon }} fa-2x text-cyan"></i>
+          <span>{{ cat.name }}</span>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── Featured Destinations ── -->
+{% if featured_destinations %}
+<section class="section-py">
+  <div class="container">
+    <div class="row align-items-end mb-5">
+      <div class="col-lg-7" data-aos="fade-right">
+        <div class="badge-label">Top Picks</div>
+        <h2 class="text-navy">Featured Destinations</h2>
+        <div class="divider-gold"></div>
+        <p class="text-muted">Explore Bangladesh's most stunning and sought-after travel destinations.</p>
+      </div>
+      <div class="col-lg-5 text-lg-end" data-aos="fade-left">
+        <a href="{% url 'destinations:list' %}" class="btn-outline-custom">
+          View All Destinations <i class="fa-solid fa-arrow-right ms-1"></i>
+        </a>
+      </div>
+    </div>
+    <div class="row g-4">
+      {% for dest in featured_destinations %}
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+        <div class="card-destination">
+          <div class="card-img-wrap">
+            {% if dest.featured_image %}
+            <img src="{{ dest.featured_image.url }}" alt="{{ dest.title }}" loading="lazy">
+            {% else %}
+            <img src="https://picsum.photos/seed/d{{ dest.pk }}/600/400" alt="{{ dest.title }}" loading="lazy">
+            {% endif %}
+            <span class="card-badge">{{ dest.get_difficulty_display }}</span>
+            <span class="card-badge-gold">{{ dest.get_best_season_display }}</span>
+          </div>
+          <div class="card-body-inner">
+            <div class="card-location"><i class="fa-solid fa-location-dot text-cyan"></i>{{ dest.district }}</div>
+            <h3 class="card-title-text">{{ dest.title }}</h3>
+            <p style="font-size:.88rem;color:var(--text-muted);margin-bottom:14px;">{{ dest.short_description|truncatewords:16 }}</p>
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <div style="font-size:.8rem;color:var(--text-muted);">Budget from</div>
+                <div class="card-price">৳{{ dest.min_budget|floatformat:0 }}</div>
+              </div>
+              <a href="{{ dest.get_absolute_url }}" class="btn-primary-custom" style="padding:10px 20px;font-size:.85rem;">
+                Explore <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── Popular Tour Packages ── -->
+{% if popular_tours %}
+<section class="section-py" style="background:var(--gray-50);">
+  <div class="container">
+    <div class="row align-items-end mb-5">
+      <div class="col-lg-7" data-aos="fade-right">
+        <div class="badge-label">Best Sellers</div>
+        <h2 class="text-navy">Popular Tour Packages</h2>
+        <div class="divider-gold"></div>
+        <p class="text-muted">Our most loved and frequently booked tour packages across Bangladesh.</p>
+      </div>
+      <div class="col-lg-5 text-lg-end" data-aos="fade-left">
+        <a href="{% url 'tours:list' %}" class="btn-outline-custom">
+          All Packages <i class="fa-solid fa-arrow-right ms-1"></i>
+        </a>
+      </div>
+    </div>
+    <div class="row g-4">
+      {% for tour in popular_tours %}
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+        <div class="card-tour">
+          <div class="card-img-wrap">
+            {% if tour.featured_image %}
+            <img src="{{ tour.featured_image.url }}" alt="{{ tour.title }}" loading="lazy">
+            {% else %}
+            <img src="https://picsum.photos/seed/t{{ tour.pk }}/600/400" alt="{{ tour.title }}" loading="lazy">
+            {% endif %}
+            {% if tour.discount_percent %}<span class="card-badge">{{ tour.discount_percent }}% OFF</span>{% endif %}
+            {% if tour.category %}<span class="card-badge-gold">{{ tour.category.name }}</span>{% endif %}
+          </div>
+          <div class="card-body-inner">
+            {% if tour.destination %}
+            <div class="card-location"><i class="fa-solid fa-location-dot text-cyan"></i>{{ tour.destination.title }}</div>
+            {% endif %}
+            <h3 class="card-title-text">{{ tour.title }}</h3>
+            <div class="card-meta">
+              <span><i class="fa-regular fa-clock text-cyan"></i>{{ tour.duration_days }}D/{{ tour.duration_nights }}N</span>
+              <span><i class="fa-solid fa-users text-cyan"></i>{{ tour.seats_available }} seats left</span>
+              <span><i class="fa-solid fa-bus text-cyan"></i>{{ tour.get_transport_type_display }}</span>
+            </div>
+            <div class="d-flex align-items-center justify-content-between mt-2">
+              <div>
+                {% if tour.discount_price %}
+                <div class="card-price-old">৳{{ tour.price|floatformat:0 }}</div>
+                <div class="card-price">৳{{ tour.discount_price|floatformat:0 }}</div>
+                {% else %}
+                <div class="card-price">৳{{ tour.price|floatformat:0 }}</div>
+                {% endif %}
+                <div style="font-size:.76rem;color:var(--text-muted);">per person</div>
+              </div>
+              <a href="{{ tour.get_absolute_url }}" class="btn-primary-custom" style="padding:10px 20px;font-size:.85rem;">
+                Book Now <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── Upcoming Events ── -->
+{% if upcoming_events %}
+<section class="section-py">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6" data-aos="fade-right">
+        <div class="badge-label">Don't Miss Out</div>
+        <h2 class="text-navy mb-2">Upcoming Tours &amp; Events</h2>
+        <div class="divider-gold"></div>
+        <p class="text-muted mb-4">Secure your spot on our upcoming scheduled tours and events.</p>
+        {% for event in upcoming_events %}
+        <div class="event-card">
+          <div class="event-date-box">
+            <div class="day">{{ event.start_date|date:"d" }}</div>
+            <div class="mon">{{ event.start_date|date:"M" }}</div>
+          </div>
+          <div>
+            <div class="fw-600" style="font-weight:600;color:var(--navy);">{{ event.title }}</div>
+            <div style="font-size:.83rem;color:var(--text-muted);margin-top:3px;">
+              <i class="fa-solid fa-location-dot text-cyan me-1"></i>{{ event.location }}
+              &nbsp;|&nbsp; <i class="fa-solid fa-users text-cyan me-1"></i>{{ event.seats_available }} seats
+              &nbsp;|&nbsp; <span class="text-cyan fw-bold">৳{{ event.price|floatformat:0 }}</span>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="col-lg-6" data-aos="fade-left">
+        <div class="ps-lg-5 mt-5 mt-lg-0">
+          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="Adventure travel" class="img-fluid rounded-4" style="box-shadow:var(--shadow-lg);">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── Why Choose Us ── -->
+<section class="section-py" style="background:var(--navy);">
+  <div class="container">
+    <div class="section-header text-center mx-auto" data-aos="fade-up">
+      <div class="badge-label" style="background:rgba(0,201,200,.15);color:var(--cyan);">Why Us</div>
+      <h2 style="color:var(--white);">Why Choose Adventure BD?</h2>
+      <div class="divider-gold mx-auto"></div>
+    </div>
+    <div class="row g-4 text-center">
+      {% for item in why_items|default:"x,x,x,x" %}
+      {% endfor %}
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+        <div style="padding:32px 20px;background:rgba(255,255,255,.05);border-radius:var(--radius-md);border:1px solid rgba(255,255,255,.08);">
+          <i class="fa-solid fa-shield-check fa-2x text-cyan mb-3"></i>
+          <h5 style="color:var(--white);">100% Secure Booking</h5>
+          <p style="color:rgba(255,255,255,.6);font-size:.88rem;">Your payments and personal data are fully protected with bank-grade security.</p>
+        </div>
+      </div>
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+        <div style="padding:32px 20px;background:rgba(255,255,255,.05);border-radius:var(--radius-md);border:1px solid rgba(255,255,255,.08);">
+          <i class="fa-solid fa-headset fa-2x text-cyan mb-3"></i>
+          <h5 style="color:var(--white);">24/7 Support</h5>
+          <p style="color:rgba(255,255,255,.6);font-size:.88rem;">Our travel experts are available round the clock to assist you throughout your journey.</p>
+        </div>
+      </div>
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+        <div style="padding:32px 20px;background:rgba(255,255,255,.05);border-radius:var(--radius-md);border:1px solid rgba(255,255,255,.08);">
+          <i class="fa-solid fa-tags fa-2x text-cyan mb-3"></i>
+          <h5 style="color:var(--white);">Best Price Guarantee</h5>
+          <p style="color:rgba(255,255,255,.6);font-size:.88rem;">We guarantee the best prices for all tour packages with no hidden charges.</p>
+        </div>
+      </div>
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+        <div style="padding:32px 20px;background:rgba(255,255,255,.05);border-radius:var(--radius-md);border:1px solid rgba(255,255,255,.08);">
+          <i class="fa-solid fa-user-tie fa-2x text-cyan mb-3"></i>
+          <h5 style="color:var(--white);">Expert Tour Guides</h5>
+          <p style="color:rgba(255,255,255,.6);font-size:.88rem;">Local, certified tour guides with deep knowledge of every destination.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Testimonials ── -->
+{% if testimonials %}
+<section class="section-py">
+  <div class="container">
+    <div class="section-header text-center mx-auto" data-aos="fade-up">
+      <div class="badge-label">Traveler Reviews</div>
+      <h2 class="text-navy">What Our Travelers Say</h2>
+      <div class="divider-gold mx-auto"></div>
+    </div>
+    <div class="row g-4">
+      {% for t in testimonials %}
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+        <div class="testimonial-card">
+          <div class="rating-stars mb-3">
+            {% for i in "12345" %}
+            {% if forloop.counter <= t.rating %}<i class="fa-solid fa-star"></i>{% else %}<i class="fa-regular fa-star"></i>{% endif %}
+            {% endfor %}
+          </div>
+          <p class="testimonial-quote">"{{ t.message }}"</p>
+          <div class="d-flex align-items-center gap-3">
+            {% if t.avatar %}
+            <img src="{{ t.avatar.url }}" class="testimonial-avatar" alt="{{ t.name }}">
+            {% else %}
+            <div class="testimonial-avatar d-flex align-items-center justify-content-center" style="background:rgba(0,201,200,.1);">
+              <i class="fa-solid fa-user text-cyan"></i>
+            </div>
+            {% endif %}
+            <div>
+              <div style="font-weight:700;color:var(--navy);font-size:.95rem;">{{ t.name }}</div>
+              {% if t.designation %}<div style="font-size:.8rem;color:var(--text-muted);">{{ t.designation }}</div>{% endif %}
+              {% if t.location %}<div style="font-size:.78rem;color:var(--cyan);"><i class="fa-solid fa-location-dot me-1"></i>{{ t.location }}</div>{% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── Latest Blogs ── -->
+{% if latest_blogs %}
+<section class="section-py" style="background:var(--gray-50);">
+  <div class="container">
+    <div class="row align-items-end mb-5">
+      <div class="col-lg-7" data-aos="fade-right">
+        <div class="badge-label">Travel Stories</div>
+        <h2 class="text-navy">Latest Travel Blog</h2>
+        <div class="divider-gold"></div>
+      </div>
+      <div class="col-lg-5 text-lg-end" data-aos="fade-left">
+        <a href="{% url 'blogs:list' %}" class="btn-outline-custom">All Articles <i class="fa-solid fa-arrow-right ms-1"></i></a>
+      </div>
+    </div>
+    <div class="row g-4">
+      {% for post in latest_blogs %}
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+        <div class="card-blog">
+          <div class="card-img-wrap">
+            {% if post.featured_image %}
+            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" loading="lazy">
+            {% else %}
+            <img src="https://picsum.photos/seed/b{{ post.pk }}/600/400" alt="{{ post.title }}" loading="lazy">
+            {% endif %}
+            {% if post.category %}<span class="card-badge">{{ post.category.name }}</span>{% endif %}
+          </div>
+          <div class="card-body-inner">
+            <div class="card-meta"><span><i class="fa-regular fa-calendar text-cyan"></i>{{ post.created_at|date:"d M Y" }}</span><span><i class="fa-regular fa-clock text-cyan"></i>{{ post.read_time }} min read</span></div>
+            <h3 class="card-title-text">{{ post.title }}</h3>
+            <p style="font-size:.88rem;color:var(--text-muted);margin-bottom:14px;">{{ post.excerpt|truncatewords:18 }}</p>
+            <a href="{{ post.get_absolute_url }}" class="btn-outline-custom" style="padding:8px 20px;font-size:.84rem;">Read More <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── FAQ ── -->
+{% if faqs %}
+<section class="section-py">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5" data-aos="fade-right">
+        <div class="badge-label">FAQ</div>
+        <h2 class="text-navy">Frequently Asked Questions</h2>
+        <div class="divider-gold"></div>
+        <p class="text-muted">Everything you need to know about booking your Bangladesh adventure.</p>
+        <a href="{% url 'contact:contact' %}" class="btn-primary-custom mt-3">Still have questions? <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="col-lg-7" data-aos="fade-left">
+        <div class="accordion faq-accordion" id="faqAccordion">
+          {% for faq in faqs %}
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#faq{{ faq.pk }}">
+                {{ faq.question }}
+              </button>
+            </h2>
+            <div id="faq{{ faq.pk }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#faqAccordion">
+              <div class="accordion-body" style="color:var(--text-muted);font-size:.92rem;">{{ faq.answer }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── CTA Banner ── -->
+<section style="background:linear-gradient(135deg,var(--cyan),var(--cyan-dark));padding:80px 0;">
+  <div class="container text-center" data-aos="zoom-in">
+    <h2 style="color:var(--navy);font-size:2.2rem;margin-bottom:12px;">Ready for Your Next Adventure?</h2>
+    <p style="color:rgba(10,22,40,.75);font-size:1.05rem;margin-bottom:32px;max-width:520px;margin-left:auto;margin-right:auto;">Join thousands of happy travelers exploring the wonders of Bangladesh with us.</p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{% url 'tours:list' %}" class="btn-gold">Browse All Tours <i class="fa-solid fa-arrow-right ms-1"></i></a>
+      <a href="{% url 'contact:contact' %}" style="background:rgba(10,22,40,.15);color:var(--navy);font-weight:700;padding:12px 28px;border-radius:50px;display:inline-flex;align-items:center;gap:8px;">Contact Us <i class="fa-solid fa-envelope"></i></a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

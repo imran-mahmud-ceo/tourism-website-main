@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<script>window.location.href = "{% url 'dashboard:bookings' %}";</script>
+<div class="container py-5 text-center">
+    <p>Redirecting to Booking Management...</p>
+    <a href="{% url 'dashboard:bookings' %}" class="btn btn-primary">Click here if not redirected</a>
+</div>
+{% endblock %}

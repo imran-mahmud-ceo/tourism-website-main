@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %}Book Tour: {{ tour.title }} — Adventure Bangladesh{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container" style="position:relative;z-index:2;">
+    <h1 class="page-title">Book Your Adventure</h1>
+    <p style="color:rgba(255,255,255,.7);">Package: {{ tour.title }}</p>
+  </div>
+</div>
+<section class="section-py">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-8">
+        <div class="card p-4 p-md-5" style="border-radius:var(--radius-md);border:1px solid var(--gray-200);box-shadow:var(--shadow-sm);">
+          <h4 class="text-navy mb-4">Traveler Information</h4>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+              {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">{{ error }}</div>
+              {% endfor %}
+            {% endif %}
+            <div class="row g-3">
+              <div class="col-md-12">
+                <label class="form-label">Full Name</label>
+                {{ form.guest_name }}
+                {% if form.guest_name.errors %}<div class="text-danger small">{{ form.guest_name.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Email Address</label>
+                {{ form.guest_email }}
+                {% if form.guest_email.errors %}<div class="text-danger small">{{ form.guest_email.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone Number</label>
+                {{ form.guest_phone }}
+                {% if form.guest_phone.errors %}<div class="text-danger small">{{ form.guest_phone.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Check-in Date</label>
+                {{ form.check_in }}
+                {% if form.check_in.errors %}<div class="text-danger small">{{ form.check_in.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Check-out Date</label>
+                {{ form.check_out }}
+                {% if form.check_out.errors %}<div class="text-danger small">{{ form.check_out.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Adult Guests</label>
+                {{ form.guests }}
+                {% if form.guests.errors %}<div class="text-danger small">{{ form.guests.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Children</label>
+                {{ form.children }}
+                {% if form.children.errors %}<div class="text-danger small">{{ form.children.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-12">
+                <label class="form-label">Payment Method</label>
+                {{ form.payment_method }}
+                {% if form.payment_method.errors %}<div class="text-danger small">{{ form.payment_method.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-12">
+                <label class="form-label">Special Requests</label>
+                {{ form.special_requests }}
+                {% if form.special_requests.errors %}<div class="text-danger small">{{ form.special_requests.errors.0 }}</div>{% endif %}
+              </div>
+            </div>
+            <button type="submit" class="btn-primary-custom w-100 justify-content-center mt-4 py-3">Confirm Booking & Proceed</button>
+          </form>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card p-4" style="border-radius:var(--radius-md);border:1px solid var(--gray-200);background:var(--gray-50);">
+          <h5 class="text-navy mb-4">Tour Summary</h5>
+          <div class="d-flex gap-3 mb-4">
+            {% if tour.featured_image %}<img src="{{ tour.featured_image.url }}" class="rounded-3" style="width:80px;height:80px;object-fit:cover;">
+            {% else %}<img src="https://picsum.photos/seed/t{{ tour.pk }}/600/400" class="rounded-3" style="width:80px;height:80px;object-fit:cover;">{% endif %}
+            <div>
+              <h6 class="mb-1">{{ tour.title }}</h6>
+              <div style="font-size:.8rem;color:var(--text-muted);"><i class="fa-solid fa-location-dot me-1"></i>{{ tour.destination.title }}</div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted small">Duration:</span>
+            <span class="fw-bold small">{{ tour.duration_days }} Days / {{ tour.duration_nights }} Nights</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted small">Transport:</span>
+            <span class="fw-bold small">{{ tour.get_transport_type_display }}</span>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between">
+            <span class="text-navy fw-bold">Total Price</span>
+            <span class="text-cyan fw-800" style="font-size:1.5rem;font-weight:800;">৳{{ tour.effective_price|floatformat:0 }}</span>
+          </div>
+          <p class="text-muted x-small mt-2" style="font-size:.72rem;">* Inclusive of all taxes and service charges. Price is per person.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

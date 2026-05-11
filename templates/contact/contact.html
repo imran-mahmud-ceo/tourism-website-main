@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}Contact Us — Adventure Bangladesh{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container" style="position:relative;z-index:2;">
+    <h1 class="page-title">Get in Touch</h1>
+    <p style="color:rgba(255,255,255,.7);">Have questions? We're here to help you plan your perfect trip.</p>
+  </div>
+</div>
+<section class="section-py">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-7">
+        <div class="card p-4 p-md-5" style="border-radius:var(--radius-md); border:1px solid var(--gray-200); box-shadow:var(--shadow-sm);">
+          <h3 class="text-navy mb-4">Send us a Message</h3>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Your Name</label>
+                {{ form.name }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Email Address</label>
+                {{ form.email }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone Number</label>
+                {{ form.phone }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Subject</label>
+                {{ form.subject }}
+              </div>
+              <div class="col-md-12">
+                <label class="form-label">Your Message</label>
+                {{ form.message }}
+              </div>
+            </div>
+            <button type="submit" class="btn-primary-custom w-100 justify-content-center mt-4 py-3">Send Message <i class="fa-solid fa-paper-plane ms-2"></i></button>
+          </form>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="ps-lg-4">
+          <h3 class="text-navy mb-4">Contact Information</h3>
+          <div class="d-flex flex-column gap-4 mb-5">
+            <div class="d-flex align-items-start gap-3">
+              <div class="stat-icon cyan" style="width:48px; height:48px; border-radius:12px;"><i class="fa-solid fa-location-dot"></i></div>
+              <div>
+                <h6 class="text-navy mb-1">Our Office</h6>
+                <p class="text-muted small mb-0">{{ site.address }}</p>
+              </div>
+            </div>
+            <div class="d-flex align-items-start gap-3">
+              <div class="stat-icon gold" style="width:48px; height:48px; border-radius:12px;"><i class="fa-solid fa-phone"></i></div>
+              <div>
+                <h6 class="text-navy mb-1">Call Us</h6>
+                <p class="text-muted small mb-0">{{ site.phone }}</p>
+              </div>
+            </div>
+            <div class="d-flex align-items-start gap-3">
+              <div class="stat-icon navy" style="width:48px; height:48px; border-radius:12px; background:rgba(10,22,40,.1);"><i class="fa-solid fa-envelope"></i></div>
+              <div>
+                <h6 class="text-navy mb-1">Email Us</h6>
+                <p class="text-muted small mb-0">{{ site.email }}</p>
+              </div>
+            </div>
+          </div>
+
+          {% if offices %}
+          <h4 class="text-navy mb-4">Our International Branches</h4>
+          <div class="row g-3">
+            {% for office in offices %}
+            <div class="col-12">
+              <div class="p-3 rounded-3" style="background:var(--gray-50); border:1px solid var(--gray-200);">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="text-navy mb-0">{{ office.flag_emoji }} {{ office.country }}</h6>
+                  {% if office.is_headquarters %}<span class="badge bg-navy small" style="font-size:.65rem;">HQ</span>{% endif %}
+                </div>
+                <p class="text-muted x-small mb-0" style="font-size:.78rem;">{{ office.city }}, {{ office.address }}</p>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

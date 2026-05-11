@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }} — Adventure Bangladesh{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container" style="position:relative;z-index:2;">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li><li class="breadcrumb-item"><a href="{% url 'blogs:list' %}">Blog</a></li><li class="breadcrumb-item active">{{ post.title }}</li></ol></nav>
+    <h1 class="page-title">{{ post.title }}</h1>
+    <div class="d-flex gap-3 flex-wrap" style="color:rgba(255,255,255,.75);font-size:.88rem;">
+      <span><i class="fa-solid fa-user text-cyan me-1"></i>By {{ post.author.get_full_name|default:post.author.username }}</span>
+      <span><i class="fa-regular fa-calendar text-cyan me-1"></i>{{ post.created_at|date:"d M Y" }}</span>
+      <span><i class="fa-regular fa-clock text-cyan me-1"></i>{{ post.read_time }} min read</span>
+      <span><i class="fa-solid fa-eye text-cyan me-1"></i>{{ post.view_count }} views</span>
+    </div>
+  </div>
+</div>
+<section class="section-py">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-8">
+        {% if post.featured_image %}<img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="img-fluid rounded-4 mb-5" style="width:100%; max-height:450px; object-fit:cover; box-shadow:var(--shadow-md);">{% endif %}
+        
+        <div class="blog-content mb-5" style="color:var(--text-main); line-height:2; font-size:1.1rem;">
+          {{ post.body|safe }}
+        </div>
+
+        <div class="p-4 rounded-4 mb-5" style="background:var(--gray-50); border:1px solid var(--gray-200);">
+          <div class="row align-items-center">
+            <div class="col-md-2 text-center text-md-start">
+              {% if post.author.avatar %}<img src="{{ post.author.avatar.url }}" class="rounded-circle" style="width:80px; height:80px; object-fit:cover; border:3px solid var(--cyan);">
+              {% else %}<div class="rounded-circle bg-white d-flex align-items-center justify-content-center mx-auto" style="width:80px; height:80px; border:3px solid var(--cyan);"><i class="fa-solid fa-user fa-2x text-cyan"></i></div>{% endif %}
+            </div>
+            <div class="col-md-10 mt-3 mt-md-0">
+              <h5 class="text-navy mb-1">About the Author: {{ post.author.get_full_name|default:post.author.username }}</h5>
+              <p class="text-muted small mb-0">{{ post.author.bio|default:"Travel expert and explorer at Adventure Bangladesh." }}</p>
+            </div>
+          </div>
+        </div>
+
+        {% if related %}
+        <h3 class="text-navy mb-4">Related Articles</h3>
+        <div class="row g-4">
+          {% for r in related %}
+          <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm" style="border-radius:var(--radius-md); overflow:hidden;">
+              {% if r.featured_image %}<img src="{{ r.featured_image.url }}" class="card-img-top" style="height:140px; object-fit:cover;">{% endif %}
+              <div class="p-3">
+                <h6 class="mb-2"><a href="{{ r.get_absolute_url }}" class="text-navy">{{ r.title }}</a></h6>
+                <div class="small text-muted">{{ r.created_at|date:"d M Y" }}</div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="ps-lg-4 sticky-top" style="top:90px;">
+          <div class="card p-4 mb-4" style="border-radius:var(--radius-md); border:1px solid var(--gray-200);">
+            <h5 class="text-navy mb-3">Table of Contents</h5>
+            <p class="small text-muted mb-0">Discover insights about {{ post.category.name }} and more.</p>
+          </div>
+          
+          <div class="p-4 rounded-4" style="background:linear-gradient(135deg, var(--cyan), var(--cyan-dark)); color:var(--navy);">
+            <h5 class="mb-3">Plan Your Trip</h5>
+            <p class="small mb-4">Inspired by this story? Book your tour with us today!</p>
+            <a href="{% url 'tours:list' %}" class="btn btn-navy bg-navy text-white w-100 py-2 rounded-pill shadow-sm" style="font-size:.9rem;">Browse Tours</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

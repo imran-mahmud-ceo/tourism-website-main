@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Tour Packages — Adventure Bangladesh{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container" style="position:relative;z-index:2;">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li><li class="breadcrumb-item active">Tour Packages</li></ol></nav>
+    <h1 class="page-title">Tour Packages</h1>
+    <p style="color:rgba(255,255,255,.7);">{{ tours.count }} packages available</p>
+  </div>
+</div>
+<section class="section-py">
+  <div class="container">
+    <form method="get" class="row g-3 mb-5 p-4" style="background:var(--white);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border:1px solid var(--gray-200);">
+      <div class="col-md-3"><input type="text" name="q" value="{{ query|default:'' }}" class="form-control" placeholder="Search tours..."></div>
+      <div class="col-md-3">
+        <select name="category" class="form-select">
+          <option value="">All Categories</option>
+          {% for cat in categories %}<option value="{{ cat.slug }}" {% if selected_category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2"><input type="number" name="min_price" class="form-control" placeholder="Min ৳"></div>
+      <div class="col-md-2"><input type="number" name="max_price" class="form-control" placeholder="Max ৳"></div>
+      <div class="col-md-2"><button type="submit" class="btn-search">Search</button></div>
+    </form>
+    <!-- Categories -->
+    <div class="d-flex gap-2 flex-wrap mb-4">
+      <a href="{% url 'tours:list' %}" class="tag-pill {% if not selected_category %}text-cyan{% endif %}">All</a>
+      {% for cat in categories %}<a href="?category={{ cat.slug }}" class="tag-pill {% if selected_category == cat.slug %}text-cyan{% endif %}">{{ cat.name }}</a>{% endfor %}
+    </div>
+    {% if tours %}
+    <div class="row g-4">
+      {% for tour in tours %}
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+        <div class="card-tour">
+          <div class="card-img-wrap">
+            {% if tour.featured_image %}<img src="{{ tour.featured_image.url }}" alt="{{ tour.title }}" loading="lazy">
+            {% else %}<img src="https://picsum.photos/seed/t{{ tour.pk }}/600/400" alt="{{ tour.title }}" loading="lazy">{% endif %}
+            {% if tour.discount_percent %}<span class="card-badge">{{ tour.discount_percent }}% OFF</span>{% endif %}
+            {% if tour.category %}<span class="card-badge-gold">{{ tour.category.name }}</span>{% endif %}
+          </div>
+          <div class="card-body-inner">
+            {% if tour.destination %}<div class="card-location"><i class="fa-solid fa-location-dot text-cyan"></i>{{ tour.destination.title }}</div>{% endif %}
+            <h3 class="card-title-text">{{ tour.title }}</h3>
+            <div class="card-meta">
+              <span><i class="fa-regular fa-clock text-cyan"></i>{{ tour.duration_days }}D/{{ tour.duration_nights }}N</span>
+              <span><i class="fa-solid fa-users text-cyan"></i>{{ tour.seats_available }} left</span>
+            </div>
+            <div class="d-flex align-items-center justify-content-between mt-2">
+              <div>
+                {% if tour.discount_price %}<div class="card-price-old">৳{{ tour.price|floatformat:0 }}</div>
+                <div class="card-price">৳{{ tour.discount_price|floatformat:0 }}</div>
+                {% else %}<div class="card-price">৳{{ tour.price|floatformat:0 }}</div>{% endif %}
+                <div style="font-size:.76rem;color:var(--text-muted);">per person</div>
+              </div>
+              <a href="{{ tour.get_absolute_url }}" class="btn-primary-custom" style="padding:10px 20px;font-size:.84rem;">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-results"><i class="fa-solid fa-suitcase-rolling"></i><h4>No tours found</h4><p>Try different search criteria.</p></div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

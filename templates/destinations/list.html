@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Destinations — Adventure Bangladesh{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container" style="position:relative;z-index:2;">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li><li class="breadcrumb-item active">Destinations</li></ol></nav>
+    <h1 class="page-title">Explore Bangladesh Destinations</h1>
+    <p style="color:rgba(255,255,255,.7);">Discover {{ destinations.count }} incredible places across Bangladesh</p>
+  </div>
+</div>
+<section class="section-py">
+  <div class="container">
+    <!-- Filters -->
+    <form method="get" class="row g-3 mb-5 p-4" style="background:var(--white);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border:1px solid var(--gray-200);">
+      <div class="col-md-4">
+        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search destinations...">
+      </div>
+      <div class="col-md-3">
+        <select name="difficulty" class="form-select">
+          <option value="">All Difficulties</option>
+          {% for val,label in difficulty_choices %}<option value="{{ val }}" {% if difficulty == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select name="season" class="form-select">
+          <option value="">All Seasons</option>
+          {% for val,label in season_choices %}<option value="{{ val }}" {% if season == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn-search">Filter</button>
+      </div>
+    </form>
+    <!-- Results -->
+    {% if destinations %}
+    <div class="row g-4">
+      {% for dest in destinations %}
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+        <div class="card-destination">
+          <div class="card-img-wrap">
+            {% if dest.featured_image %}<img src="{{ dest.featured_image.url }}" alt="{{ dest.title }}" loading="lazy">
+            {% else %}<img src="https://picsum.photos/seed/d{{ dest.pk }}/600/400" alt="{{ dest.title }}" loading="lazy">{% endif %}
+            <span class="card-badge badge-{{ dest.difficulty }}">{{ dest.get_difficulty_display }}</span>
+          </div>
+          <div class="card-body-inner">
+            <div class="card-location"><i class="fa-solid fa-location-dot text-cyan"></i>{{ dest.district }}</div>
+            <h3 class="card-title-text">{{ dest.title }}</h3>
+            <p style="font-size:.87rem;color:var(--text-muted);">{{ dest.short_description|truncatewords:14 }}</p>
+            <div class="d-flex align-items-center justify-content-between mt-3">
+              <div><div style="font-size:.78rem;color:var(--text-muted);">From</div><div class="card-price">৳{{ dest.min_budget|floatformat:0 }}</div></div>
+              <a href="{{ dest.get_absolute_url }}" class="btn-primary-custom" style="padding:10px 20px;font-size:.84rem;">Explore <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-results"><i class="fa-solid fa-map-location-dot"></i><h4>No destinations found</h4><p>Try adjusting your filters.</p></div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
